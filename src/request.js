@@ -113,7 +113,7 @@ amplify.request.types.ajax = function( defnSettings ) {
 		var xhr, handleResponse,
 			url = defnSettings.url,
 			abort = request.abort,
-			ajaxSettings = $.extend( true, {}, defnSettings, { data: settings.data } ),
+			ajaxSettings = null,
 			aborted = false,
 			ampXHR = {
 				readyState: 0,
@@ -173,6 +173,12 @@ amplify.request.types.ajax = function( defnSettings ) {
 			// TODO: figure out if this breaks polling or multi-part responses
 			handleResponse = $.noop;
 		};
+		
+		ajaxSettings = $.extend(true, {}, defnSettings, { data: settings.data });
+		if (settings.data.body) {
+		    ajaxSettings.data.body = undefined;
+		    ajaxSettings.data = $.extend(true, ajaxSettings.data, settings.data.body);
+		}
 
 		amplify.publish( "request.ajax.preprocess",
 			defnSettings, settings, ajaxSettings, ampXHR );
